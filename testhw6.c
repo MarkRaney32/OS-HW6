@@ -10,23 +10,55 @@ void multiply(int *x, int *y){
 	exit();
 }
 
-void race_condition(int* x, void* y) {
-	for(int i = 0; i < 10000000; i++) {
-		*x += 1;
-		*x -= 1;
+void race_condition(int* x, int* y) {
+	for(int i = 0; i < 100000; i++) {
+		x = x + 1;
+		x = x - 1;
+		if(x != 0)
+		{
+			//lock_acquire(lock_t *lock);
+			printf(1, "Race Condition Achieved: %d\n", x);
+			//lock_release(lock_t *lock);
+			exit();
+		}
 	}
-	printf(1, "val: %d\n", *x);
+	exit();
+}
+
+void nrace_condition(int* x, int* y) {
+	for(int i = 0; i < 100000; i++) {
+		//lock_acquire(lock_t *lock);
+		x = x + 1;
+		x = x - 1;
+		//lock_release(lock_t *lock);
+		if(x != 0)
+		{
+			//lock_acquire(lock_t *lock);
+			printf(1, "NRace Condition Achieved: %d\n", x);
+			//lock_release(lock_t *lock);
+			exit();
+		}
+	}
 	exit();
 }
 
 int main() {
-	int x = 10;
-	int y = 11;
+
+	//lock_t *tempLock;
+	//lock_init(lock_t *tempLock);
+
+	int x = 11;
+	int y = 10;
 	int rc = 0;
 
 	thread_create((void(*)(void*,void*))multiply, &x, &y);
+	thread_join();
+
+	thread_create((void(*)(void*,void*))race_condition, &rc, &y);
 	thread_create((void(*)(void*,void*))race_condition, &rc, &y);
 	thread_join();
+	thread_join();
+	printf(1, "Race Condition Results: %d\n", rc);
 
 	exit();
 }
