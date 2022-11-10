@@ -1,3 +1,9 @@
+/*
+ * ADDED BY MARK AND HENRY
+ *
+ * */
+
+
 #include "user.h"
 #include "threadlib.h"
 #define PGSIZE          4096
@@ -18,18 +24,22 @@ int thread_join() {
 
 // Lock nonsense
 
-void lock_init(lock_t *lock) {
+void lock_init(struct __lock_t *lock) {
   lock->ticket = 0;
   lock->turn = 0;
 }
 
-void lock_acquire(lock_t *lock) {
+void lock_acquire(struct __lock_t *lock) {
   int myturn = FetchAndAdd(&lock->ticket);
-  while (lock->turn != myturn)
-    ; // spin
+  while (lock->turn != myturn){
+    sleep(1); 
+    // Spin. For some reason just having it do nothing
+    // was super slow ^^^^
+    //printf(1, "spinning...n");
+  }
 }
 
-void lock_release(lock_t *lock) {
+void lock_release(struct __lock_t *lock) {
   lock->turn = lock->turn + 1;
 }
 

@@ -10,7 +10,7 @@ typedef struct __lock_t {
   int turn;
 } lock_t;
 
-void lock_init(lock_t *lock);
-void lock_acquire(lock_t *lock);
-void lock_release(lock_t *lock);
+void lock_init(struct __lock_t *lock);
+void lock_acquire(struct __lock_t *lock);
+void lock_release(struct __lock_t *lock);
 int FetchAndAdd(int *ptr);
